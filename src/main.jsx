@@ -5,7 +5,7 @@ import SplashScreen from "./pages/SplashScreen";
 import HomePage from "./pages/HomePage";
 import MakananPage from './pages/MakananPage';
 import MinumanPage from './pages/MinumanPage';
-import RecipesPage from "./pages/RecipesPage";
+// import RecipesPage from "./pages/RecipesPage";
 import ProfilePage from "./pages/ProfilePage";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import EditRecipePage from "./pages/EditRecipePage";
@@ -117,14 +117,14 @@ function AppRoot() {
         return <MakananPage onRecipeClick={handleRecipeClick} />;
       case 'minuman':
         return <MinumanPage onRecipeClick={handleRecipeClick} />;
-      case "makanan":
-      case "minuman":
-        return (
-          <RecipesPage
-            initialCategory={currentPage}
-            onRecipeClick={handleRecipeClick}
-          />
-        );
+      // case "makanan":
+      // case "minuman":
+      //   return (
+      //     <RecipesPage
+      //       initialCategory={currentPage}
+      //       onRecipeClick={handleRecipeClick}
+      //     />
+      //   );
 
       case "profile":
         return <ProfilePage onRecipeClick={handleRecipeClick} />;
