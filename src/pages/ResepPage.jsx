@@ -1,36 +1,31 @@
 // src/pages/ResepPage.jsx
 /*eslint-disable react/prop-types */
-// CATATAN: Ganti di main.jsx:
-// 1. Import: import ResepPage from './pages/ResepPage';
-// 2. Hapus import MakananPage dan MinumanPage
-// 3. Ganti case 'makanan' dan 'minuman' dengan case 'resep'
-// 4. Update navbar untuk navigasi ke 'resep' bukan 'makanan'/'minuman'
 
-import { useState } from 'react';
-import { useRecipes } from '../hooks/useRecipes';
-import RecipeGrid from '../components/makanan/RecipeGrid';
-import AdvancedFilter from '../components/common/AdvancedFilter';
+import { useState } from "react";
+import { useRecipes } from "../hooks/useRecipes";
+import RecipeGrid from "../components/makanan/RecipeGrid";
+import AdvancedFilter from "../components/common/AdvancedFilter";
 
 export default function ResepPage({ onRecipeClick }) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all'); // 'all', 'makanan', 'minuman'
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all"); // 'all', 'makanan', 'minuman'
   const [filters, setFilters] = useState({
-    difficulty: '',
-    sortBy: 'created_at',
-    order: 'desc',
-    prepTimeMax: '',
+    difficulty: "",
+    sortBy: "created_at",
+    order: "desc",
+    prepTimeMax: "",
   });
   const [page, setPage] = useState(1);
 
   // Fetch recipes from API with all filters
   const { recipes, loading, error, pagination, refetch } = useRecipes({
-    category: categoryFilter === 'all' ? undefined : categoryFilter,
+    category: categoryFilter === "all" ? undefined : categoryFilter,
     search: searchQuery || undefined,
     difficulty: filters.difficulty || undefined,
     page,
     limit: 12,
     sort_by: filters.sortBy,
-    order: filters.order
+    order: filters.order,
   });
 
   const handleSearchChange = (query) => {
@@ -50,29 +45,31 @@ export default function ResepPage({ onRecipeClick }) {
 
   // Client-side filter for prep time
   const filteredRecipes = filters.prepTimeMax
-    ? recipes.filter(recipe => recipe.prep_time <= parseInt(filters.prepTimeMax))
+    ? recipes.filter(
+        (recipe) => recipe.prep_time <= parseInt(filters.prepTimeMax)
+      )
     : recipes;
 
   // Determine gradient colors based on category
   const getGradientClass = () => {
     switch (categoryFilter) {
-      case 'makanan':
-        return 'bg-gradient-to-br from-blue-50 via-white to-indigo-50';
-      case 'minuman':
-        return 'bg-gradient-to-br from-green-50 via-white to-cyan-50';
+      case "makanan":
+        return "bg-gradient-to-br from-blue-50 via-white to-indigo-50";
+      case "minuman":
+        return "bg-gradient-to-br from-green-50 via-white to-cyan-50";
       default:
-        return 'bg-gradient-to-br from-purple-50 via-white to-pink-50';
+        return "bg-gradient-to-br from-purple-50 via-white to-pink-50";
     }
   };
 
   const getButtonColor = () => {
     switch (categoryFilter) {
-      case 'makanan':
-        return 'blue';
-      case 'minuman':
-        return 'green';
+      case "makanan":
+        return "blue";
+      case "minuman":
+        return "green";
       default:
-        return 'purple';
+        return "purple";
     }
   };
 
@@ -84,14 +81,19 @@ export default function ResepPage({ onRecipeClick }) {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl md:text-5xl font-bold text-slate-800 mb-4">
-            Resep {categoryFilter === 'makanan' ? 'Makanan' : categoryFilter === 'minuman' ? 'Minuman' : 'Kuliner'}
+            Resep{" "}
+            {categoryFilter === "makanan"
+              ? "Makanan"
+              : categoryFilter === "minuman"
+              ? "Minuman"
+              : "Kuliner"}
           </h1>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            {categoryFilter === 'makanan' 
-              ? 'Temukan berbagai resep makanan nusantara yang lezat'
-              : categoryFilter === 'minuman'
-              ? 'Temukan berbagai resep minuman segar dan nikmat'
-              : 'Jelajahi semua resep makanan dan minuman favorit'}
+            {categoryFilter === "makanan"
+              ? "Temukan berbagai resep makanan nusantara yang lezat"
+              : categoryFilter === "minuman"
+              ? "Temukan berbagai resep minuman segar dan nikmat"
+              : "Jelajahi semua resep makanan dan minuman favorit"}
           </p>
         </div>
 
@@ -99,31 +101,31 @@ export default function ResepPage({ onRecipeClick }) {
         <div className="mb-6 flex justify-center">
           <div className="inline-flex bg-white/60 backdrop-blur rounded-2xl p-1.5 shadow-sm border border-white/40">
             <button
-              onClick={() => handleCategoryChange('all')}
+              onClick={() => handleCategoryChange("all")}
               className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
-                categoryFilter === 'all'
-                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-200'
-                  : 'text-slate-600 hover:text-purple-600 hover:bg-white/50'
+                categoryFilter === "all"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-200"
+                  : "text-slate-600 hover:text-purple-600 hover:bg-white/50"
               }`}
             >
               Semua
             </button>
             <button
-              onClick={() => handleCategoryChange('makanan')}
+              onClick={() => handleCategoryChange("makanan")}
               className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
-                categoryFilter === 'makanan'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                  : 'text-slate-600 hover:text-blue-600 hover:bg-white/50'
+                categoryFilter === "makanan"
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                  : "text-slate-600 hover:text-blue-600 hover:bg-white/50"
               }`}
             >
               Makanan
             </button>
             <button
-              onClick={() => handleCategoryChange('minuman')}
+              onClick={() => handleCategoryChange("minuman")}
               className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
-                categoryFilter === 'minuman'
-                  ? 'bg-green-600 text-white shadow-lg shadow-green-200'
-                  : 'text-slate-600 hover:text-green-600 hover:bg-white/50'
+                categoryFilter === "minuman"
+                  ? "bg-green-600 text-white shadow-lg shadow-green-200"
+                  : "text-slate-600 hover:text-green-600 hover:bg-white/50"
               }`}
             >
               Minuman
@@ -141,7 +143,9 @@ export default function ResepPage({ onRecipeClick }) {
         {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
-            <div className={`animate-spin rounded-full h-12 w-12 border-b-2 border-${color}-600 mx-auto`}></div>
+            <div
+              className={`animate-spin rounded-full h-12 w-12 border-b-2 border-${color}-600 mx-auto`}
+            ></div>
             <p className="mt-4 text-slate-600">Memuat resep...</p>
           </div>
         )}
@@ -150,7 +154,9 @@ export default function ResepPage({ onRecipeClick }) {
         {error && (
           <div className="text-center py-12">
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-              <p className="text-red-600 font-semibold mb-2">Terjadi Kesalahan</p>
+              <p className="text-red-600 font-semibold mb-2">
+                Terjadi Kesalahan
+              </p>
               <p className="text-red-500">{error}</p>
               <button
                 onClick={refetch}
@@ -175,9 +181,9 @@ export default function ResepPage({ onRecipeClick }) {
                 </p>
               </div>
             ) : (
-              <RecipeGrid 
-                recipes={filteredRecipes} 
-                onRecipeClick={onRecipeClick} 
+              <RecipeGrid
+                recipes={filteredRecipes}
+                onRecipeClick={onRecipeClick}
               />
             )}
 
@@ -185,13 +191,13 @@ export default function ResepPage({ onRecipeClick }) {
             {pagination && pagination.total_pages > 1 && (
               <div className="mt-12 flex flex-col md:flex-row items-center justify-center gap-4">
                 <button
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
                   className={`px-6 py-3 bg-white/80 backdrop-blur border border-slate-300 rounded-xl hover:bg-${color}-50 hover:border-${color}-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-slate-700`}
                 >
                   ← Sebelumnya
                 </button>
-                
+
                 <div className="flex flex-col md:flex-row items-center gap-2 bg-white/60 backdrop-blur px-4 py-2 rounded-xl border border-white/40">
                   <span className="text-slate-700 font-semibold">
                     Halaman {pagination.page} dari {pagination.total_pages}
@@ -200,9 +206,9 @@ export default function ResepPage({ onRecipeClick }) {
                     ({pagination.total} resep)
                   </span>
                 </div>
-                
+
                 <button
-                  onClick={() => setPage(p => p + 1)}
+                  onClick={() => setPage((p) => p + 1)}
                   disabled={page === pagination.total_pages}
                   className={`px-6 py-3 bg-white/80 backdrop-blur border border-slate-300 rounded-xl hover:bg-${color}-50 hover:border-${color}-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-slate-700`}
                 >
