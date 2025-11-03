@@ -1,0 +1,218 @@
+// src/pages/ResepPage.jsx
+/*eslint-disable react/prop-types */
+// CATATAN: Ganti di main.jsx:
+// 1. Import: import ResepPage from './pages/ResepPage';
+// 2. Hapus import MakananPage dan MinumanPage
+// 3. Ganti case 'makanan' dan 'minuman' dengan case 'resep'
+// 4. Update navbar untuk navigasi ke 'resep' bukan 'makanan'/'minuman'
+
+import { useState } from 'react';
+import { useRecipes } from '../hooks/useRecipes';
+import RecipeGrid from '../components/makanan/RecipeGrid';
+import AdvancedFilter from '../components/common/AdvancedFilter';
+
+export default function ResepPage({ onRecipeClick }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all'); // 'all', 'makanan', 'minuman'
+  const [filters, setFilters] = useState({
+    difficulty: '',
+    sortBy: 'created_at',
+    order: 'desc',
+    prepTimeMax: '',
+  });
+  const [page, setPage] = useState(1);
+
+  // Fetch recipes from API with all filters
+  const { recipes, loading, error, pagination, refetch } = useRecipes({
+    category: categoryFilter === 'all' ? undefined : categoryFilter,
+    search: searchQuery || undefined,
+    difficulty: filters.difficulty || undefined,
+    page,
+    limit: 12,
+    sort_by: filters.sortBy,
+    order: filters.order
+  });
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+    setPage(1);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    setPage(1);
+  };
+
+  const handleCategoryChange = (category) => {
+    setCategoryFilter(category);
+    setPage(1);
+  };
+
+  // Client-side filter for prep time
+  const filteredRecipes = filters.prepTimeMax
+    ? recipes.filter(recipe => recipe.prep_time <= parseInt(filters.prepTimeMax))
+    : recipes;
+
+  // Determine gradient colors based on category
+  const getGradientClass = () => {
+    switch (categoryFilter) {
+      case 'makanan':
+        return 'bg-gradient-to-br from-blue-50 via-white to-indigo-50';
+      case 'minuman':
+        return 'bg-gradient-to-br from-green-50 via-white to-cyan-50';
+      default:
+        return 'bg-gradient-to-br from-purple-50 via-white to-pink-50';
+    }
+  };
+
+  const getButtonColor = () => {
+    switch (categoryFilter) {
+      case 'makanan':
+        return 'blue';
+      case 'minuman':
+        return 'green';
+      default:
+        return 'purple';
+    }
+  };
+
+  const color = getButtonColor();
+
+  return (
+    <div className={`min-h-screen ${getGradientClass()} pb-20 md:pb-8`}>
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl md:text-5xl font-bold text-slate-800 mb-4">
+            Resep {categoryFilter === 'makanan' ? 'Makanan' : categoryFilter === 'minuman' ? 'Minuman' : 'Kuliner'}
+          </h1>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            {categoryFilter === 'makanan' 
+              ? 'Temukan berbagai resep makanan nusantara yang lezat'
+              : categoryFilter === 'minuman'
+              ? 'Temukan berbagai resep minuman segar dan nikmat'
+              : 'Jelajahi semua resep makanan dan minuman favorit'}
+          </p>
+        </div>
+
+        {/* Category Filter Tabs */}
+        <div className="mb-6 flex justify-center">
+          <div className="inline-flex bg-white/60 backdrop-blur rounded-2xl p-1.5 shadow-sm border border-white/40">
+            <button
+              onClick={() => handleCategoryChange('all')}
+              className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+                categoryFilter === 'all'
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-200'
+                  : 'text-slate-600 hover:text-purple-600 hover:bg-white/50'
+              }`}
+            >
+              Semua
+            </button>
+            <button
+              onClick={() => handleCategoryChange('makanan')}
+              className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+                categoryFilter === 'makanan'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                  : 'text-slate-600 hover:text-blue-600 hover:bg-white/50'
+              }`}
+            >
+              Makanan
+            </button>
+            <button
+              onClick={() => handleCategoryChange('minuman')}
+              className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+                categoryFilter === 'minuman'
+                  ? 'bg-green-600 text-white shadow-lg shadow-green-200'
+                  : 'text-slate-600 hover:text-green-600 hover:bg-white/50'
+              }`}
+            >
+              Minuman
+            </button>
+          </div>
+        </div>
+
+        {/* Advanced Filter */}
+        <AdvancedFilter
+          onSearchChange={handleSearchChange}
+          onFilterChange={handleFilterChange}
+          initialFilters={{ ...filters, search: searchQuery }}
+        />
+
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-12">
+            <div className={`animate-spin rounded-full h-12 w-12 border-b-2 border-${color}-600 mx-auto`}></div>
+            <p className="mt-4 text-slate-600">Memuat resep...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="text-center py-12">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+              <p className="text-red-600 font-semibold mb-2">Terjadi Kesalahan</p>
+              <p className="text-red-500">{error}</p>
+              <button
+                onClick={refetch}
+                className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Recipes Grid */}
+        {!loading && !error && (
+          <>
+            {filteredRecipes.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-lg">
+                  Tidak ada resep ditemukan
+                </p>
+                <p className="text-gray-500 mt-2">
+                  Coba ubah filter atau kata kunci pencarian
+                </p>
+              </div>
+            ) : (
+              <RecipeGrid 
+                recipes={filteredRecipes} 
+                onRecipeClick={onRecipeClick} 
+              />
+            )}
+
+            {/* Pagination */}
+            {pagination && pagination.total_pages > 1 && (
+              <div className="mt-12 flex flex-col md:flex-row items-center justify-center gap-4">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className={`px-6 py-3 bg-white/80 backdrop-blur border border-slate-300 rounded-xl hover:bg-${color}-50 hover:border-${color}-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-slate-700`}
+                >
+                  ← Sebelumnya
+                </button>
+                
+                <div className="flex flex-col md:flex-row items-center gap-2 bg-white/60 backdrop-blur px-4 py-2 rounded-xl border border-white/40">
+                  <span className="text-slate-700 font-semibold">
+                    Halaman {pagination.page} dari {pagination.total_pages}
+                  </span>
+                  <span className="text-slate-500 text-sm">
+                    ({pagination.total} resep)
+                  </span>
+                </div>
+                
+                <button
+                  onClick={() => setPage(p => p + 1)}
+                  disabled={page === pagination.total_pages}
+                  className={`px-6 py-3 bg-white/80 backdrop-blur border border-slate-300 rounded-xl hover:bg-${color}-50 hover:border-${color}-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-slate-700`}
+                >
+                  Selanjutnya →
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </main>
+    </div>
+  );
+}

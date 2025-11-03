@@ -1,13 +1,18 @@
 // src/components/navbar/MobileNavbar.jsx
 /*eslint-disable react/prop-types */
-import { Home, ChefHat, User, Plus } from 'lucide-react';
+import { Home, ChefHat, User, Plus } from "lucide-react";
 
-export default function MobileNavbar({ currentPage, onNavigate, onCreateRecipe }) {
+export default function MobileNavbar({
+  currentPage,
+  onNavigate,
+  onCreateRecipe,
+}) {
   const navItems = [
-    { id: 'home', label: 'Beranda', icon: Home },
-    { id: 'makanan', label: 'Makanan', icon: ChefHat },
-    { id: 'minuman', label: 'Minuman', icon: ChefHat },
-    { id: 'profile', label: 'Profile', icon: User }
+    { id: "home", label: "Beranda", icon: Home },
+    { id: "makanan", label: "Makanan", icon: ChefHat },
+    { id: "minuman", label: "Minuman", icon: ChefHat },
+    { id: "resep", label: "Resep", icon: ChefHat },
+    { id: "profile", label: "Profile", icon: User },
   ];
 
   return (
@@ -28,13 +33,13 @@ export default function MobileNavbar({ currentPage, onNavigate, onCreateRecipe }
           {navItems.map((item) => {
             const IconComponent = item.icon;
             const isActive = currentPage === item.id;
-            
+
             return (
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 className={`flex flex-col items-center py-2 px-3 transition-colors duration-200 ${
-                  isActive ? 'text-blue-600' : 'text-gray-400'
+                  isActive ? "text-blue-600" : "text-gray-400"
                 }`}
               >
                 <IconComponent
@@ -42,9 +47,7 @@ export default function MobileNavbar({ currentPage, onNavigate, onCreateRecipe }
                   className="mb-1"
                   strokeWidth={isActive ? 2 : 1.5}
                 />
-                <span className="text-xs font-medium">
-                  {item.label}
-                </span>
+                <span className="text-xs font-medium">{item.label}</span>
               </button>
             );
           })}
