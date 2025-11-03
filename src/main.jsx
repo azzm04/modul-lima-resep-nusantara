@@ -3,8 +3,8 @@ import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import SplashScreen from "./pages/SplashScreen";
 import HomePage from "./pages/HomePage";
-import MakananPage from './pages/MakananPage';
-import MinumanPage from './pages/MinumanPage';
+import MakananPage from "./pages/MakananPage";
+import MinumanPage from "./pages/MinumanPage";
 // import RecipesPage from "./pages/RecipesPage";
 import ProfilePage from "./pages/ProfilePage";
 import CreateRecipePage from "./pages/CreateRecipePage";
@@ -113,9 +113,9 @@ function AppRoot() {
             onNavigate={handleNavigation}
           />
         );
-      case 'makanan':
+      case "makanan":
         return <MakananPage onRecipeClick={handleRecipeClick} />;
-      case 'minuman':
+      case "minuman":
         return <MinumanPage onRecipeClick={handleRecipeClick} />;
       // case "makanan":
       // case "minuman":
